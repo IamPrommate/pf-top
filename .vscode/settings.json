@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/56297b8f-661f-4a73-8b63-53d9d2a8e656/resourceGroups/prommate2024/providers/Microsoft.Web/sites/pf-top",
+    "appService.deploySubpath": "."
+}
