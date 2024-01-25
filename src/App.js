@@ -9,7 +9,7 @@ import Skills from './components/Skills';
 import Edu from './components/Edu';
 import Footer from './components/Footer';
 import { BrowserRouter as Router } from "react-router-dom";
-
+//awdiadjw
 
 const Body = styled.div`
   background-color: ${({ theme }) => theme.bg };
