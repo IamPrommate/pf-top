@@ -2,12 +2,12 @@
 import './App.css';
 import styled, { ThemeProvider } from 'styled-components';
 import { greenTheme } from './utils/Theme';
-import { darkTheme2 } from './utils/Theme';
 import NavBar from './components/NavBar';
 import HeroSec from './components/HeroSec';
 import Skills from './components/Skills';
 import Edu from './components/Edu';
 import Footer from './components/Footer';
+import Contact from './components/Contact';
 import { BrowserRouter as Router } from "react-router-dom";
 //awdiadjw
 
@@ -46,7 +46,9 @@ function App() {
           <Skills />
           <Edu />
           </Wrapper>
+          <Contact />
           <Footer />
+ 
       </Body>
       </Router>
     </ThemeProvider>

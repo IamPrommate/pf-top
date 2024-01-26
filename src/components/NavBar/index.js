@@ -1,12 +1,16 @@
 import React from 'react'
 import { DiCssdeck } from 'react-icons/di';
+import { VscActivateBreakpoints } from "react-icons/vsc";
 import { FaBars } from 'react-icons/fa';
 import { Bio } from '../../data/constants';
 import { Close, CloseRounded } from '@mui/icons-material';
 import { useTheme } from 'styled-components';
 import { Link as LinkR } from 'react-router-dom';
 import styled from 'styled-components';
+import { useState } from 'react';
 //import _default from '../../themes/default';
+import Modal from 'react-modal';
+
 
 const Nav = styled.div`
     background-color: ${({theme}) => theme.card};
@@ -19,7 +23,7 @@ const Nav = styled.div`
     top: 0;
     z-index: 10;
     @media (max-width: 960px) {
-        trastion: 0.8s all ease;
+        transtion: 0.8s all ease;
     }
 `;
 const NavbarContainer = styled.div`
@@ -70,6 +74,7 @@ const NavLink = styled.a`
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     text-decoration: none;
+
     :hover {
       color: ${({ theme }) => theme.primary};
       font-size: 18px;
@@ -119,10 +124,11 @@ const ButtonContainer = styled.div`
 
 const MobileIcon = styled.div`
   display: none;
+  
   @media screen and (max-width: 768px) {
     display: block;
     position: absolute;
-    top: 0;
+    top: 10px;
     right: 0;
     transform: translate(-100%, 60%);
     font-size: 1.5rem;
@@ -167,16 +173,134 @@ const MobileLink = styled.a`
   }
 `;
 
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4); /* semi-transparent black overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure the modal is on top of other elements */
+`;
+
+
+const ContactTitle = styled.div`
+  font-size: 24px;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.text_primary};
+`
+
+const ContactInput = styled.input`
+  flex: 1;
+  background-color: transparent;
+  border: 1px solid ${({ theme }) => theme.text_secondary};
+  outline: none;
+  font-size: 18px;
+  color: ${({ theme }) => theme.text_primary};
+  border-radius: 12px;
+  padding: 12px 16px;
+  &:focus {
+    border: 1px solid ${({ theme }) => theme.primary};
+  }
+`
+
+const ContactInputMessage = styled.textarea`
+  flex: 1;
+  background-color: transparent;
+  border: 1px solid ${({ theme }) => theme.text_secondary};
+  outline: none;
+  font-size: 18px;
+  color: ${({ theme }) => theme.text_primary};
+  border-radius: 12px;
+  padding: 12px 16px;
+  &:focus {
+    border: 1px solid ${({ theme }) => theme.primary};
+  }
+`
+
+const ContactButton2 = styled.input`
+  width: 100%;
+  text-decoration: none;
+  text-align: center;
+  background: ${({ theme }) => theme.gd1 };
+  background: linear-gradient(225deg, ${({ theme }) => theme.gd1 } 0%, ${({ theme }) => theme.gd2} 100%);
+  background: -moz-linear-gradient(225deg, ${({ theme }) => theme.gd1 } 0%, ${({ theme }) => theme.gd2} 100%);
+  background: -webkit-linear-gradient(225deg, ${({ theme }) => theme.gd1 } 0%, ${({ theme }) => theme.gd2} 100%);
+  padding: 13px 16px;
+  margin-top: 2px;
+  border-radius: 12px;
+  border: none;
+  color: ${({ theme }) => theme.white};
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+`
+
+const ModalContainer = styled.div`
+  position: relative;
+  display: ${(props) => (props.modalIsOpen ? 'block' : 'none')};
+`;
+
+
+const ModalContentContainer = styled.div`
+  position: relative;
+  width: 95%;
+  max-width: 500px;
+  transition: all 0.2s ease;
+
+  @media (max-width: 640px){
+  width: 60%
+  }
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 28px;
+  right: 25px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 25px;
+  color: #000;  // Set the color you want
+`;
+
+const ContactForm = styled.form`
+  width: 100%;
+  position: relative; /* Ensure relative positioning for absolute child */
+  display: flex;
+  flex-direction: column;
+  background-color: ${({ theme }) => theme.card};
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: rgba(23, 92, 230, 0.15) 0px 4px 24px;
+  gap: 12px;
+`;
+
+
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const theme = useTheme()
+  const theme = useTheme();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const openModal = () => {
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+  };
+
   return (
     <Nav>
       <NavbarContainer>
         <NavLogo to='/'>
           <a style={{ display: "flex", alignItems: "center", color: "black", marginBottom: '20;', cursor: 'pointer' }}>
-            <DiCssdeck size="3rem" /> <Span>Prommatew</Span>
+            <VscActivateBreakpoints size="2.5rem" /> <Span>Prommatew</Span>
           </a>
         </NavLogo>
         <MobileIcon>
@@ -191,10 +315,27 @@ const Navbar = () => {
           <NavLink href='#education'>Education</NavLink>
         </NavItems>
         <ButtonContainer>
-          <ContactButton href={Bio.github} target="_blank">Contact</ContactButton>
+          <ContactButton onClick = {openModal} href={Bio.github} target="_blank">Contact</ContactButton>
         </ButtonContainer>
-        {
-          isOpen &&
+
+        <ModalContainer modalIsOpen={modalIsOpen}>
+  <ModalOverlay>
+    <ModalContentContainer>
+      <CloseButton onClick={closeModal}>&times;</CloseButton>
+      <ContactForm>
+        <CloseButton onClick={closeModal}>&times;</CloseButton>
+          <ContactTitle>Email Me</ContactTitle>
+          <ContactInput placeholder="Your Email" name="from_email" />
+          <ContactInput placeholder="Your Name" name="from_name" />
+          <ContactInput placeholder="Subject" name="subject" />
+          <ContactInputMessage placeholder="Message" rows="4" name="message" />
+          <ContactButton2 type="submit" value="Send" onClick={closeModal}/>
+          </ContactForm>
+    </ModalContentContainer>
+  </ModalOverlay>
+</ModalContainer>
+      
+        {isOpen &&
           <MobileMenu isOpen={isOpen}>
             <MobileLink href="#about" onClick={() => {
               setIsOpen(!isOpen)
@@ -213,14 +354,18 @@ const Navbar = () => {
             href={Bio.github} 
             target="_blank"
             onClick={() => {
-              setIsOpen(!isOpen)
+              setIsOpen(!isOpen);
+              openModal();
             }}>
               Contact</ContactButton>
           </MobileMenu>
         }
       </NavbarContainer>
+
     </Nav>
+
+    
   )
 }
 
-export default Navbar
+export default Navbar;

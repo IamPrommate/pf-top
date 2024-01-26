@@ -32,9 +32,12 @@ export const greenTheme = {
   card:"#FFFFFF",
   card_light: '#FFFFFF',
   button:"#15d666",
+  gd1:"hsla(145, 82%, 46%, 1)",
+  gd2:"hsla(135, 100%, 50%, 1)",
   white:"#FFFFFF",
   black:"#000000",
 }
+
 
 
   
